@@ -1,0 +1,11 @@
+name: Flow control
+on: push
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - run: exit "$(( RANDOM % 2 ))" # ステップ１：50%の確率でエラーが発生する
+      - run: exit 1 # ステップ２：ステップ１の終了時のみ実行され、必ずエラーが発生する
+        id: error
+      - run: echo "Catch error step" # ステップ３：ステップ２が実行された時のみ、メッセージを出力する
+        if: ${{ failure() && steps.error.outcome == 'failure' }}
